@@ -103,7 +103,7 @@
             placeholder="动态数据变量名"
           ></a-input>
 
-          <KChangeOption v-show="!options.dynamic" v-model="options.options" />
+          <KChangeOption v-show="!options.dynamic" v-model="options.options" :type="selectItem.type === 'cascader'? 'cascader': 'option'"/>
         </a-form-item>
         <!-- 选项配置及动态数据配置 end -->
         <a-form-item v-if="selectItem.type === 'grid'" label="栅格间距">
@@ -161,7 +161,7 @@
               typeof options.format === 'undefined' ? '' : options.format
             "
           /> -->
-          <!-- <a-date-picker v-if="!options.range" 
+          <!-- <a-date-picker v-if="!options.range"
             :placeholder="
               typeof options.format === 'undefined' ? '' : options.format
             "

@@ -2,14 +2,57 @@
   <div class="option-change-container">
     <a-row v-if="type === 'option'" :gutter="8">
       <div class="option-change-box" v-for="(val, index) in value" :key="index">
-        <a-col :span="20">
-          <a-input v-model="val.value" placeholder="各级间使用“/”进行分隔"/>
-        </a-col>
-        <a-col :span="4"
+        <a-col :span="12"
+          ><a-input v-model="val.label" placeholder="名称"
+        /></a-col>
+        <a-col :span="9"><a-input v-model="val.value" placeholder="值"/></a-col>
+        <a-col :span="3"
           ><div @click="handleDelete(index)" class="option-delete-box">
             <a-icon type="delete" /></div
         ></a-col>
       </div>
+      <a-col :span="24"><a @click="handleAdd">添加</a></a-col>
+    </a-row>
+
+    <a-row v-if="type === 'cascader'" :gutter="8">
+      <el-tree :data="copyValue" node-key="value" :expand-on-click-node="false" :indent="14" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse">
+        <div slot-scope="{ node, data }" style="width: 100%;display: flex">
+          <div style="flex: 1"><a-input style="height: 24px; line-height: 24px" :value="node.label" @blur="optChange($event, node, data)" :ref="node.id"/></div>
+          <div style="width: 80px">
+            <a-button
+              style="padding:0 5px"
+              type="link"
+              @click="() => appendOpt(node, data)">
+              添加
+            </a-button>
+            <a-button
+              style="padding:0 5px"
+              type="link"
+              @click="() => removeOpt(node, data)">
+              删除
+            </a-button>
+          </div>
+        </div>
+      </el-tree>
+<!--      <a-tree :tree-data="copyValue" node-key="value" :expand-on-click-node="false" :indent="12" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse">-->
+<!--        <div slot="title" slot-scope="{ title }" style="width: 100%;display: flex">-->
+<!--          <div style="flex: 1"><a-input style="height: 24px; line-height: 24px" :value="node.label" @blur="optChange($event, node, data)" /></div>-->
+<!--          <div style="width: 80px">-->
+<!--            <a-button-->
+<!--              style="padding:0 5px"-->
+<!--              type="link"-->
+<!--              @click="() => appendOpt(node, data)">-->
+<!--              添加-->
+<!--            </a-button>-->
+<!--            <a-button-->
+<!--              style="padding:0 5px"-->
+<!--              type="link"-->
+<!--              @click="() => removeOpt(node, data)">-->
+<!--              删除-->
+<!--            </a-button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </a-tree>-->
       <a-col :span="24"><a @click="handleAdd">添加</a></a-col>
     </a-row>
 
@@ -66,16 +109,116 @@ export default {
       default: "option"
     }
   },
+  data() {
+    return {
+      expandKeys: [],
+      addOptId: ''
+    }
+  },
+  computed: {
+    copyValue() {
+      // return this.formatValue(JSON.parse(JSON.stringify(this.value)))
+      return this.value
+    }
+  },
   methods: {
+    formatValue(data) {
+      return data.map((val, index) => {
+        if (val.children && val.children.length) {
+          val.children = this.formatValue(val.children)
+          return {
+            ...val,
+            id: index
+          }
+        }
+        return {
+          ...val,
+          id: index
+        }
+      })
+    },
+    unFormatValue(data) {
+      return data.map(val => {
+        if (val.children && val.children.length) {
+          val.children = this.unFormatValue(val.children)
+          return {
+            label: val.title,
+            value: val.key,
+            children: val.children
+          }
+        }
+        return {
+          label: val.title,
+          value: val.key
+        }
+      })
+    },
+    removeEmptyValue(data) {
+      return data.filter(val => {
+        if (val.children && val.children.length) {
+          this.removeEmptyValue(val.children)
+          return val.value
+        }
+        return val.value
+      })
+    },
+    nodeExpand(e) {
+      this.expandKeys.push(e.value)
+    },
+    nodeCollapse(e) {
+      this.expandKeys = this.expandKeys.filter(val => val !== e.value)
+    },
+    optChange(e, node, data) {
+      if (e.srcElement.value) {
+        data.label = data.value = e.srcElement.value
+        // this.copyValue
+        this.$emit("input", [...this.copyValue])
+      }else {
+        this.removeOpt(node, data)
+      }
+    },
+    appendOpt(node, data) {
+      data.children.push({
+        label: '',
+        value: '',
+        children: []
+      })
+      this.expandKeys.push(data.value)
+      this.$nextTick(() => {
+        window.addOptId = ''
+        data.children.forEach(val => {
+          if(!val.value) {
+            window.addOptId = val.$treeNodeId
+          }
+        })
+        setTimeout(() => {
+          this.$refs[window.addOptId].$el.focus()
+        }, 0)
+      })
+    },
+    removeOpt(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.value === data.value);
+      children.splice(index, 1);
+      this.expandKeys = this.expandKeys.filter(val => val !== data.value)
+      this.$emit("input", [...this.copyValue])
+    },
     handleAdd() {
       // 添加
+      let value = this.value
+      // if (this.type === 'cascader') {
+      //   value = this.unFormatValue(this.copyValue)
+      // }
       let addData = [
-        ...this.value,
+        ...value,
         {
-          value: "",
-          label: ""
+          label: '',
+          value: '',
+          children: []
         }
       ];
+      // console.log(addData)
       this.$emit("input", addData);
     },
     handleAddCol() {
