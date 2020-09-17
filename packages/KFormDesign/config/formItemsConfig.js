@@ -404,28 +404,7 @@ export const basicsList = [
       clearable: false, // 是否显示清除按钮
       dynamicKey: "",
       dynamic: true,
-      options: [
-        {
-          value: "1",
-          label: "选项1",
-          children: [
-            {
-              value: "11",
-              label: "选项11"
-            }
-          ]
-        },
-        {
-          value: "2",
-          label: "选项2",
-          children: [
-            {
-              value: "22",
-              label: "选项22"
-            }
-          ]
-        }
-      ]
+      options: []
     },
     model: "",
     key: "",

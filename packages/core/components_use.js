@@ -33,12 +33,13 @@ import {
   DatePicker,
   TimePicker,
   message,
-  Upload,  
+  Upload,
   Tooltip,
   FormModel,
   Collapse,
   Cascader,
-  TreeSelect
+  TreeSelect,
+  Pagination
 } from 'ant-design-vue'
 
 Vue.use(TreeSelect)
@@ -72,7 +73,12 @@ Vue.use(Divider)
 Vue.use(DatePicker)
 Vue.use(TimePicker)
 Vue.use(Upload)
+Vue.use(Pagination)
 // Vue.use(notification)
+
+import * as all from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(all.Tree)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message
