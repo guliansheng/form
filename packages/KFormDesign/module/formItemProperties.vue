@@ -103,7 +103,7 @@
             placeholder="动态数据变量名"
           ></a-input>
 
-          <KChangeOption v-show="!options.dynamic" v-model="options.options" :type="selectItem.type === 'cascader'? 'cascader': 'option'"/>
+          <KChangeOption :key="selectItem.key" v-show="!options.dynamic" v-model="options.options" :type="selectItem.type === 'cascader' || selectItem.type === 'treeSelect'? 'tree': 'option'"/>
         </a-form-item>
         <!-- 选项配置及动态数据配置 end -->
         <a-form-item v-if="selectItem.type === 'grid'" label="栅格间距">

@@ -14,10 +14,10 @@
       <a-col :span="24"><a @click="handleAdd">添加</a></a-col>
     </a-row>
 
-    <a-row v-if="type === 'cascader'" :gutter="8">
-      <el-tree :data="copyValue" node-key="value" :expand-on-click-node="false" :indent="14" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse">
+    <a-row v-if="type === 'tree'" :gutter="8">
+      <el-tree :data="copyValue" node-key="value" :auto-expand-parent='false' :expand-on-click-node="false" :indent="14" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse" ref="treeRef">
         <div slot-scope="{ node, data }" style="width: 100%;display: flex">
-          <div style="flex: 1"><a-input style="height: 24px; line-height: 24px" :value="node.label" @blur="optChange($event, node, data)" :ref="node.id"/></div>
+          <div style="flex: 1"><a-input style="height: 22px; line-height: 22px" :value="node.label" @blur="optChange($event, node, data)" :ref="node.id" :maxLength="12"/></div>
           <div style="width: 80px">
             <a-button
               style="padding:0 5px"
@@ -111,8 +111,7 @@ export default {
   },
   data() {
     return {
-      expandKeys: [],
-      addOptId: ''
+      expandKeys: []
     }
   },
   computed: {
@@ -122,46 +121,37 @@ export default {
     }
   },
   methods: {
-    formatValue(data) {
-      return data.map((val, index) => {
-        if (val.children && val.children.length) {
-          val.children = this.formatValue(val.children)
-          return {
-            ...val,
-            id: index
-          }
-        }
-        return {
-          ...val,
-          id: index
-        }
-      })
-    },
-    unFormatValue(data) {
-      return data.map(val => {
-        if (val.children && val.children.length) {
-          val.children = this.unFormatValue(val.children)
-          return {
-            label: val.title,
-            value: val.key,
-            children: val.children
-          }
-        }
-        return {
-          label: val.title,
-          value: val.key
-        }
-      })
-    },
-    removeEmptyValue(data) {
-      return data.filter(val => {
-        if (val.children && val.children.length) {
-          this.removeEmptyValue(val.children)
-          return val.value
-        }
-        return val.value
-      })
-    },
+    // formatValue(data) {
+    //   return data.map((val, index) => {
+    //     if (val.children && val.children.length) {
+    //       val.children = this.formatValue(val.children)
+    //       return {
+    //         ...val,
+    //         id: index
+    //       }
+    //     }
+    //     return {
+    //       ...val,
+    //       id: index
+    //     }
+    //   })
+    // },
+    // unFormatValue(data) {
+    //   return data.map(val => {
+    //     if (val.children && val.children.length) {
+    //       val.children = this.unFormatValue(val.children)
+    //       return {
+    //         label: val.title,
+    //         value: val.key,
+    //         children: val.children
+    //       }
+    //     }
+    //     return {
+    //       label: val.title,
+    //       value: val.key
+    //     }
+    //   })
+    // },
     nodeExpand(e) {
       this.expandKeys.push(e.value)
     },
@@ -178,6 +168,10 @@ export default {
       }
     },
     appendOpt(node, data) {
+      if (node.level >= 4) {
+        this.$message.warning('最多可添加四级菜单');
+        return
+      }
       data.children.push({
         label: '',
         value: '',
@@ -218,8 +212,14 @@ export default {
           children: []
         }
       ];
-      // console.log(addData)
       this.$emit("input", addData);
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.$refs.treeRef.data.length) {
+            this.$refs[this.$refs.treeRef.data[this.$refs.treeRef.data.length - 1].$treeNodeId].$el.focus()
+          }
+        }, 0)
+      })
     },
     handleAddCol() {
       // 添加栅格Col
