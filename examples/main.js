@@ -6,49 +6,43 @@ import App from "./App.vue";
 import router from "./router/";
 
 import KFormDesign from "../packages/index";
-// import Cmp from "./components/CustomComponent/index.vue";
+import FixedTable from "./components/CustomComponent/fixedTable.vue";
 // let Cmp = {
 //   name: "cmp",
 //   render: function(h) {
 //     return h("div", "我是自定义组件");
 //   }
 // };
-// setFormDesignConfig({
-//   title: "测试自定义字段",
-//   list: [
-//     {
-//       type: "demo", // 表单类型
-//       label: "自定义组件", // 标题文字
-//       icon: "icon-gallery",
-//       component: Cmp,
-//       options: {
-//         defaultValue: undefined,
-//         multiple: false,
-//         disabled: false,
-//         width: "100%",
-//         clearable: true,
-//         placeholder: "请选择",
-//         showSearch: false
-//       },
-//       model: "",
-//       key: "",
-//       rules: [
-//         {
-//           required: false,
-//           message: "必填项"
-//         }
-//       ]
-//     }
-//   ],
-//   uploadFile: "",
-//   uploadImage: "",
-//   uploadFileName: "",
-//   uploadImageName: "",
-//   uploadFileData: { data: 1545 },
-//   uploadImageData: { data: 1545 },
-//   uploadFileHeaders: { data: 1545 },
-//   uploadImageHeaders: { data: 1545 }
-// });
+KFormDesign.setConfig({
+  title: "自定义控件",
+  list: [
+    {
+      type: "fixedTable", // 表单类型
+      label: "固定表格", // 标题文字
+      icon: "icon-gallery",
+      component: FixedTable,
+      options: {
+        defaultValue: undefined,
+        width: "100%",
+        placeholder: "待填写",
+        dynamicKey: "",
+        dynamic: false,
+        options: [
+          {label: '项目1', value: ''},
+          {label: '项目2', value: ''}
+        ]
+      },
+      model: "",
+      key: "",
+      rules: [
+        {
+          required: false,
+          message: "必填项"
+        }
+      ]
+    }
+  ]
+});
 Vue.use(KFormDesign);
 Vue.config.productionTip = false;
 

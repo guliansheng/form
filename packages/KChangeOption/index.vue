@@ -15,7 +15,7 @@
     </a-row>
 
     <a-row v-if="type === 'tree'" :gutter="8">
-      <el-tree :data="copyValue" node-key="value" :auto-expand-parent='false' :expand-on-click-node="false" :indent="14" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse" ref="treeRef">
+      <el-tree :data="copyValue" node-key="value" :auto-expand-parent='false' :expand-on-click-node="false" :default-expanded-keys="expandKeys" @node-expand="nodeExpand" @node-collapse="nodeCollapse" ref="treeRef">
         <div slot-scope="{ node, data }" style="width: 100%;display: flex">
           <div style="flex: 1"><a-input style="height: 22px; line-height: 22px" :value="node.label" @blur="optChange($event, node, data)" :ref="node.id" :maxLength="12"/></div>
           <div style="width: 80px">
@@ -209,13 +209,13 @@ export default {
         {
           label: '',
           value: '',
-          children: []
+          children: this.type === 'tree' ? [] : undefined
         }
       ];
       this.$emit("input", addData);
       this.$nextTick(() => {
         setTimeout(() => {
-          if (this.$refs.treeRef.data.length) {
+          if (this.type === 'tree' && this.$refs.treeRef.data.length) {
             this.$refs[this.$refs.treeRef.data[this.$refs.treeRef.data.length - 1].$treeNodeId].$el.focus()
           }
         }, 0)
