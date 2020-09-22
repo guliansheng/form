@@ -53,8 +53,8 @@ export default {
       background: transparent;
       box-shadow: none;
     }
-  }
-  /deep/ .ant-table-tbody > tr > td:first-child{
-    background: #fbfbfb;
+    &:first-child {
+      background: #fbfbfb;
+    }
   }
 </style>

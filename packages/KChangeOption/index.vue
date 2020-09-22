@@ -172,12 +172,14 @@ export default {
         this.$message.warning('最多可添加四级菜单');
         return
       }
+      this.expandKeys.push(data.value)
+      if (!data.children) {
+        this.$set(data, 'children', [])
+      }
       data.children.push({
         label: '',
-        value: '',
-        children: []
+        value: ''
       })
-      this.expandKeys.push(data.value)
       this.$nextTick(() => {
         window.addOptId = ''
         data.children.forEach(val => {
@@ -200,22 +202,17 @@ export default {
     },
     handleAdd() {
       // 添加
-      let value = this.value
-      // if (this.type === 'cascader') {
-      //   value = this.unFormatValue(this.copyValue)
-      // }
       let addData = [
-        ...value,
+        ...this.value,
         {
           label: '',
-          value: '',
-          children: this.type === 'tree' ? [] : undefined
+          value: ''
         }
       ];
       this.$emit("input", addData);
       this.$nextTick(() => {
         setTimeout(() => {
-          if (this.type === 'tree' && this.$refs.treeRef.data.length) {
+          if (this.type === 'tree' && this.$refs.treeRef && this.$refs.treeRef.data.length) {
             this.$refs[this.$refs.treeRef.data[this.$refs.treeRef.data.length - 1].$treeNodeId].$el.focus()
           }
         }, 0)
