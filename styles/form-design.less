@@ -10,7 +10,7 @@
 @title-text-color: #fff;
 @border-color    : #ccc;
 
-@left-right-width      : 270px;
+@left-right-width      : 320px;
 @header-height         : 56px;
 @operating-area-height : 45px;
 @import "./k-table.less";
@@ -444,6 +444,7 @@
                   overflow-x : auto;
                   overflow-y : auto;
                   white-space: nowrap;
+                  display: flex;
 
                   .moving {
                     // 拖放移动中
@@ -456,6 +457,7 @@
                     min-width     : 185px;
                     display       : inline-block;
                     vertical-align: top;
+                    flex: 1;
 
                     .ant-form-item>.ant-form-item-label,
                     .ant-form-item>.ant-form-item-control-wrapper {

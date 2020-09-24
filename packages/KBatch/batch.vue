@@ -91,6 +91,7 @@ export default {
         columns.push({
           title: "序号",
           dataIndex: "sequence_index_number",
+          fixed: "left",
           width: "60px",
           align: "center",
           customRender: (text, record, index) => {
@@ -106,7 +107,7 @@ export default {
             return {
               title: item.label,
               dataIndex: item.key,
-              width: index === this.record.list.length - 1 ? "" : "190px",
+              // width: index === this.record.list.length - 1 ? "" : "190px",
               scopedSlots: { customRender: item.key }
             };
           })
